@@ -1,6 +1,5 @@
 import { dataMock } from './data.mock.js';
 
-let selectedYear = '2019';
 const ctx = document.getElementById('myChart');
 const labels = [
   'Jan',
