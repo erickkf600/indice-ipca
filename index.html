@@ -4,6 +4,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
     <title>Document</title>
   </head>
   <body>
@@ -17,6 +21,7 @@
               <option value="2018">2018</option>
               <option value="2019">2019</option>
               <option value="2020">2020</option>
+              <option value="2021">2021</option>
             </select>
           </div>
         </div>
@@ -25,6 +30,34 @@
           <canvas id="myChart"></canvas>
         </div>
         <p class="msg">Nenhum dado encontrado!</p>
+      </div>
+
+      <div class="grid">
+        <div class="grid-card">
+          <h2>Legenda</h2>
+          <p class="negative">Negativo</p>
+          <p class="positive">Positivo</p>
+        </div>
+        <div class="grid-card" onclick="downloadSheet()">
+          <div class="content">
+            <img src="./download.svg" alt="download icon" />
+            <p>Fazer download</p>
+          </div>
+        </div>
+        <div class="grid-card">
+          <p class="tri-title">Média Trimestral</p>
+          <div class="chart">
+            <div class="labels">
+              <p>Jan - Mar</p>
+              <p>Abr - Jun</p>
+              <p>Jul - Set</p>
+              <p>Out - Dez</p>
+            </div>
+            <div class="chart-size">
+              <canvas id="doughnut"></canvas>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </body>

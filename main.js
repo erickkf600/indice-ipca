@@ -94,9 +94,58 @@ const dataMock = [{
     data: '01/12/2020',
     valor: '0.83',
 },
+{
+    data: '01/01/2021',
+    valor: '0.50',
+},
+{
+    data: '01/02/2021',
+    valor: '0.2',
+},
+{
+    data: '01/03/2021',
+    valor: '0.15',
+},
+{
+    data: '01/04/2021',
+    valor: '-0.25',
+},
+{
+    data: '01/05/2021',
+    valor: '0.45',
+},
+{
+    data: '01/06/2021',
+    valor: '0.26',
+},
+{
+    data: '01/07/2021',
+    valor: '-0.20',
+},
+{
+    data: '01/08/2021',
+    valor: '-1',
+},
+{
+    data: '01/09/2021',
+    valor: '0.17',
+},
+{
+    data: '01/10/2021',
+    valor: '0.55',
+},
+{
+    data: '01/11/2021',
+    valor: '0.39',
+},
+{
+    data: '01/12/2021',
+    valor: '0.83',
+},
 ];
 
 const ctx = document.getElementById('myChart');
+const ctx2 = document.getElementById('doughnut');
 const labels = [
 'Jan',
 'Fev',
@@ -195,16 +244,90 @@ options: {
 },
 });
 
+const doughnut = new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+        datasets: [{
+            data: null,
+            backgroundColor: [
+                '#eb4034',
+                "#ebcd34",
+                "#348feb",
+                "#4BC0C0"
+            ],
+        }],
+
+    },
+    options: {
+      aspectRatio: 1,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        title: {
+          display: false,
+        }
+      }
+    },
+  });
+
 const select = document.getElementById('select-year');
 const error_msg = document.querySelector('.msg');
 const selecione = document.querySelector('.selecione');
+const grid = document.querySelector('.grid');
+let doughnutValues
+let trimestralValuesIntact
+let selectedYear
 select.addEventListener('change', (event) => {
-myChart.data.datasets[0].data = result[event.target.value];
-myChart.update();
-selecione.style.display = 'none';
-if (!result[event.target.value]) {
-    error_msg.style.display = 'flex';
-} else {
-    error_msg.style.display = 'none';
-}
+    selectedYear = event.target.value
+    myChart.data.datasets[0].data = result[event.target.value];
+    myChart.update();
+    selecione.style.display = 'none';
+    grid.style.height = '180px';
+    if (!result[event.target.value]) {
+        error_msg.style.display = 'flex';
+    } else {
+        error_msg.style.display = 'none';
+    }
+    trimestralValuesIntact = result[event.target.value]
+    let trimestralValues =  result[event.target.value]?.reduce((acc, _, i) =>{
+        return i % 3 === 0  ? [...acc, result[event.target.value].slice(i, i + 3)] : acc
+    }, [])
+
+    doughnutValues = trimestralValues.map(el =>{
+        return el.reduce((ac, el) => +parseFloat(ac + el.NovoValor).toFixed(2), 0)
+    })
+
+    doughnut.data.datasets[0].data = doughnutValues;
+    doughnut.update();
 });
+
+
+function downloadSheet(){
+    let csv
+    for(let row = 0; row < trimestralValuesIntact.length; row++){
+        let keysAmount = Object.keys(trimestralValuesIntact[row]).length
+        let keysCounter = 0
+
+        if(row === 0){
+        for(let key in trimestralValuesIntact[row]){
+            csv += key + (keysCounter+1 < keysAmount ? '|' : '\r\n' )
+            keysCounter++
+        }
+        }else{
+        for(let key in trimestralValuesIntact[row]){
+            csv += trimestralValuesIntact[row][key] + (keysCounter+1 < keysAmount ? '|' : '\r\n' )
+            keysCounter++
+        }
+        }
+
+        keysCounter = 0
+    }
+
+    let link = document.createElement('a')
+    link.id = 'download-csv'
+    link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(csv));
+    link.setAttribute('download', 'planilha'+selectedYear+'.csv');
+    document.body.appendChild(link)
+    document.querySelector('#download-csv').click()
+}
